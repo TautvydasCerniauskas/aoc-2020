@@ -13,11 +13,11 @@ fn main() {
 
     match day.as_str() {
         "day1" => {
-            let input = read_all::<i32>("input1.txt");
+            let input = read_all::<i32>("inputs/input1.in");
             println!("{:?}", two_sum(input));
         }
         "day2" => {
-            let input = &read_all::<String>("input2.txt");
+            let input = &read_all::<String>("inputs/input2.in");
             println!("Day 2 solution 1 result: {}", correct_password(input));
             println!(
                 "Day 2 solution 2 result: {}",
@@ -25,7 +25,7 @@ fn main() {
             );
         }
         "day3" => {
-            let input = &read_all::<String>("input3.txt");
+            let input = &read_all::<String>("inputs/input3.in");
             println!(
                 "Day 3 solution 1 result: {}",
                 tree_problem_1_and_2(input, 3, 1)
