@@ -1,3 +1,4 @@
+use regex::Regex;
 use std::collections::HashMap;
 
 // Day 1
@@ -95,4 +96,98 @@ pub fn tree_problem_1_and_2(input: &Vec<String>, right: i32, down: i32) -> u64 {
         }
     }
     trees
+}
+
+// Day 4
+pub fn missing_passport_sol_1(input: &Vec<String>) -> u64 {
+    let mut value_to_parse = String::new();
+    let valid_keys: Vec<&str> = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+    let mut result = 0;
+    for (i, line) in input.iter().enumerate() {
+        value_to_parse.push_str(line);
+        value_to_parse.push(' ');
+        if i == input.len() - 1 || line.len() == 0 {
+            let keys: Vec<_> = value_to_parse
+                .split([' ', ':'].as_ref())
+                .filter(|c| !c.is_empty())
+                .step_by(2)
+                .collect();
+
+            if valid_keys.iter().all(|item| keys.contains(item)) {
+                result += 1;
+            }
+            value_to_parse.clear();
+        }
+    }
+    result
+}
+
+pub fn missing_passport_sol_2(input: String) -> usize {
+    let entries = parse_entries(&input);
+    let v = Validator::new();
+    entries.iter().filter(|e| v.is_valid(e)).count()
+}
+
+fn has_fields(e: &Entry) -> bool {
+    e.len() == 8 || (e.len() == 7 && !e.contains_key("cid"))
+}
+
+fn atoi(s: &str) -> Option<i32> {
+    i32::from_str_radix(s, 10).ok()
+}
+
+type Entry<'t> = HashMap<&'t str, &'t str>;
+
+fn parse_entries(s: &str) -> Vec<Entry> {
+    let mut entries = Vec::new();
+    for line in s.split("\n\n") {
+        let mut m = HashMap::new();
+        for segment in line.split_ascii_whitespace() {
+            let mut ent = segment.split(':');
+            let k = ent.next().unwrap();
+            let v = ent.next().unwrap();
+            m.insert(k, v);
+        }
+        entries.push(m);
+    }
+    entries
+}
+
+struct Validator {
+    res: HashMap<&'static str, Regex>,
+}
+
+impl Validator {
+    fn new() -> Self {
+        let mut res = HashMap::new();
+        let regex = |s| Regex::new(s).unwrap();
+        res.insert("byr", regex(r"^\d{4}$"));
+        res.insert("iyr", regex(r"^\d{4}$"));
+        res.insert("eyr", regex(r"^\d{4}$"));
+        res.insert("hgt", regex(r"^\d+(cm|in)$"));
+        res.insert("hcl", regex(r"^#[0-9a-f]{6}$"));
+        res.insert("ecl", regex(r"^(amb|blu|brn|gry|grn|hzl|oth)$"));
+        res.insert("pid", regex(r"^[0-9]{9}$"));
+        Self { res }
+    }
+
+    fn is_valid(&self, e: &Entry) -> bool {
+        let valid_fields = e
+            .iter()
+            .filter(|(&k, _)| k != "cid")
+            .filter(|(&k, v)| self.res[k].is_match(v))
+            .filter(|(&k, v)| match k {
+                "byr" => atoi(v).map_or(false, |n| n >= 1920 && n <= 2002),
+                "iyr" => atoi(v).map_or(false, |n| n >= 2010 && n <= 2020),
+                "eyr" => atoi(v).map_or(false, |n| n >= 2020 && n <= 2030),
+                "hgt" => match &v[v.len() - 2..] {
+                    "cm" => atoi(&v[..3]).map_or(false, |n| n >= 150 && n <= 193),
+                    "in" => atoi(&v[..2]).map_or(false, |n| n >= 59 && n <= 76),
+                    _ => unreachable!(),
+                },
+                _ => true,
+            })
+            .count();
+        return has_fields(e) && valid_fields == 7;
+    }
 }

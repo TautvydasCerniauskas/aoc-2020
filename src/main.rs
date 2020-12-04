@@ -4,7 +4,8 @@ mod read_file;
 mod solutions;
 use read_file::read_all;
 use solutions::{
-    correct_password, correct_password_second_solution, tree_problem_1_and_2, two_sum,
+    correct_password, correct_password_second_solution, missing_passport_sol_1,
+    missing_passport_sol_2, tree_problem_1_and_2, two_sum,
 };
 
 fn main() {
@@ -48,6 +49,13 @@ fn main() {
                 prob_2_sol *= tree_problem_1_and_2(input, entry.r, entry.d);
             }
             println!("Day 3 solution 2 result: {}", prob_2_sol);
+        }
+        "day4" => {
+            let input = &read_all::<String>("inputs/input4.in");
+            println!("Day 4 solution 1 result: {}", missing_passport_sol_1(input));
+
+            let text = input.join("\n");
+            println!("Day 4 solution 2 result: {}", missing_passport_sol_2(text));
         }
         _ => println!("Wrong argument!"),
     }
