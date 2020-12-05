@@ -231,11 +231,10 @@ fn handle_first(first: &str, mut range_start: f32, mut range_end: f32) -> i32 {
 }
 
 pub fn boarding_problem_2(input: &Vec<String>) -> i32 {
-    let mut result = boarding_problem(input);
-    &result.sort();
-    let first = take(&result, 0);
-    let last = take(&result, result.len() - 1);
-    let new_set: Vec<i32> = (first..last).collect();
+    let result = boarding_problem(input);
+    let first = result.iter().min().unwrap();
+    let last = result.iter().max().unwrap();
+    let new_set: Vec<i32> = (*first..*last).collect();
     *take(
         &new_set
             .iter()
