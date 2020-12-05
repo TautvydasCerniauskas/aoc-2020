@@ -65,7 +65,6 @@ fn main() {
             );
 
             let result = boarding_problem_2(&input);
-
             println!("Day 5 solution 2 result: {:?}", result);
         }
         _ => println!("Wrong argument!"),
