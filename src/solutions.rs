@@ -122,6 +122,7 @@ pub fn missing_passport_sol_1(input: &Vec<String>) -> u64 {
     result
 }
 
+// Day 4 problem 2
 pub fn missing_passport_sol_2(input: String) -> usize {
     let entries = parse_entries(&input);
     let v = Validator::new();
@@ -190,4 +191,42 @@ impl Validator {
             .count();
         return has_fields(e) && valid_fields == 7;
     }
+}
+
+// Day 5
+pub fn boarding_problem(input: &Vec<String>) -> i32 {
+    input
+        .iter()
+        .map(|line| {
+            let (first, second) = line.split_at(7);
+            let res_first = handle_first(first, 0.0_f32, 127.0_f32);
+            let res_second = handle_first(second, 0.0_f32, 7.0_f32);
+            res_first * 8 + res_second
+        })
+        .max()
+        .unwrap()
+}
+
+fn handle_first(first: &str, mut range_start: f32, mut range_end: f32) -> i32 {
+    let mut result = 0.0;
+    for (i, f) in first.chars().enumerate() {
+        match f {
+            'F' | 'L' => {
+                if i == first.len() - 1 {
+                    result = range_start;
+                }
+                let new_value = ((range_end - range_start) / 2.0).floor();
+                range_end = range_end - (new_value + 1.0);
+            }
+            'B' | 'R' => {
+                if i == first.len() - 1 {
+                    result = range_end;
+                }
+                let new_value: f32 = ((range_end - range_start) / 2.0).ceil();
+                range_start = range_start + new_value;
+            }
+            _ => unreachable!(),
+        };
+    }
+    result as i32
 }
