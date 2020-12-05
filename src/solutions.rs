@@ -194,7 +194,7 @@ impl Validator {
 }
 
 // Day 5
-pub fn boarding_problem(input: &Vec<String>) -> i32 {
+pub fn boarding_problem(input: &Vec<String>) -> Vec<i32> {
     input
         .iter()
         .map(|line| {
@@ -203,8 +203,7 @@ pub fn boarding_problem(input: &Vec<String>) -> i32 {
             let res_second = handle_first(second, 0.0_f32, 7.0_f32);
             res_first * 8 + res_second
         })
-        .max()
-        .unwrap()
+        .collect()
 }
 
 fn handle_first(first: &str, mut range_start: f32, mut range_end: f32) -> i32 {
@@ -229,4 +228,19 @@ fn handle_first(first: &str, mut range_start: f32, mut range_end: f32) -> i32 {
         };
     }
     result as i32
+}
+
+pub fn boarding_problem_2(input: &Vec<String>) -> i32 {
+    let mut result = boarding_problem(input);
+    &result.sort();
+    let first = take(&result, 0);
+    let last = take(&result, result.len() - 1);
+    let new_set: Vec<i32> = (first..last).collect();
+    *take(
+        &new_set
+            .iter()
+            .filter(|x| !result.contains(&x))
+            .collect::<Vec<_>>(),
+        0,
+    )
 }
