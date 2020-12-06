@@ -245,10 +245,10 @@ pub fn boarding_problem_2(input: &Vec<String>) -> i32 {
 }
 
 // Day 6
-pub fn question_problem(input: &String) -> usize {
+pub fn question_problem(input: &Vec<String>) -> usize {
     let mut result = 0;
-    let input: Vec<_> = input.split("\n").collect();
     let mut hm: HashMap<char, i32> = HashMap::new();
+
     for (i, line) in input.iter().enumerate() {
         for c in line.chars() {
             hm.insert(c, 1);
@@ -262,12 +262,10 @@ pub fn question_problem(input: &String) -> usize {
     result
 }
 
-pub fn question_problem_2(input: &String) -> usize {
+pub fn question_problem_2(input: &Vec<String>) -> usize {
     let mut hm: HashMap<char, i32> = HashMap::new();
     let mut result = 0;
     let mut groups = 0;
-
-    let input: Vec<_> = input.split("\n").collect();
 
     for (i, line) in input.iter().enumerate() {
         let break_condition = line.len() == 0 || i == input.len() - 1;
@@ -288,6 +286,7 @@ pub fn question_problem_2(input: &String) -> usize {
                 .filter(|v| *v == &value_to_check_against)
                 .count();
 
+            // Reset values
             groups = 0;
             hm.clear();
         }

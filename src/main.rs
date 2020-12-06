@@ -70,7 +70,6 @@ fn main() {
         }
         "day6" => {
             let input = &read_all::<String>("inputs/input6.in");
-            let input = input.join("\n");
             println!("Day 6 solution 1 result: {}", question_problem(&input));
 
             println!("Day 6 solution 2 result: {}", question_problem_2(&input));
