@@ -5,7 +5,8 @@ mod solutions;
 use read_file::read_all;
 use solutions::{
     boarding_problem, boarding_problem_2, correct_password, correct_password_second_solution,
-    missing_passport_sol_1, missing_passport_sol_2, tree_problem_1_and_2, two_sum,
+    missing_passport_sol_1, missing_passport_sol_2, question_problem, question_problem_2,
+    tree_problem_1_and_2, two_sum,
 };
 
 fn main() {
@@ -66,6 +67,13 @@ fn main() {
 
             let result = boarding_problem_2(&input);
             println!("Day 5 solution 2 result: {:?}", result);
+        }
+        "day6" => {
+            let input = &read_all::<String>("inputs/input6.in");
+            let input = input.join("\n");
+            println!("Day 6 solution 1 result: {}", question_problem(&input));
+
+            println!("Day 6 solution 2 result: {}", question_problem_2(&input));
         }
         _ => println!("Wrong argument!"),
     }
