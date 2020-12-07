@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 // Day 1
 pub fn two_sum(input: Vec<i32>) -> i32 {
@@ -292,4 +292,94 @@ pub fn question_problem_2(input: &Vec<String>) -> usize {
         }
     }
     result
+}
+
+#[derive(Debug)]
+struct Bag {
+    head: String,
+    tail: HashMap<String, i32>,
+}
+
+impl Bag {
+    fn build_bags(row: Vec<&str>) -> Self {
+        let head = take(&row, 0)[..take(&row, 0).len() - 5].to_string();
+        let tail = take(&row, 1);
+        if tail == "no other bags." {
+            return Bag {
+                head,
+                tail: HashMap::new(),
+            };
+        }
+
+        let right_side: HashMap<String, i32> = take(&row, 1)
+            .split(", ")
+            .map(|c| {
+                let capture = Regex::new(r"^(\d+) ((\w+ ?)+) bags?\.?$")
+                    .unwrap()
+                    .captures(c)
+                    .unwrap();
+                let count = atoi(capture.get(1).unwrap().as_str()).unwrap();
+                let bag = capture.get(2).unwrap().as_str().to_string();
+                (bag, count)
+            })
+            .collect();
+        Bag {
+            head,
+            tail: right_side,
+        }
+    }
+}
+
+// Day 7
+pub fn bag_problem(input: &Vec<String>) {
+    let mut bags: Vec<Bag> = Vec::new();
+    for line in input.iter() {
+        let row: Vec<&str> = line.split(" contain ").collect();
+        bags.push(Bag::build_bags(row));
+    }
+    println!(
+        "Solution to the first problem: {}",
+        contains(&bags, &HashSet::new(), "shiny gold").len()
+    );
+    println!(
+        "Solution to second problem: {}",
+        search_bags(&bags, &mut HashMap::new(), "shiny gold")
+    );
+}
+fn search_bags(bags: &Vec<Bag>, contains_map: &mut HashMap<String, i32>, bag: &str) -> i32 {
+    bags.iter()
+        .find(|b| b.head == bag)
+        .unwrap()
+        .tail
+        .clone()
+        .iter()
+        .map(|(k, v)| {
+            let req = match contains_map.get(k) {
+                Some(&req) => req,
+                None => {
+                    let req = search_bags(bags, contains_map, k) + 1;
+                    &contains_map.insert(k.to_string(), req);
+                    req
+                }
+            };
+            v * req
+        })
+        .sum()
+}
+
+fn contains(bags: &Vec<Bag>, contains_map: &HashSet<String>, bag: &str) -> HashSet<String> {
+    let mut res_map: HashSet<String> = bags
+        .iter()
+        .filter(|b| b.tail.contains_key(bag))
+        .filter(|b| !contains_map.contains(&b.head))
+        .map(|b| &b.head)
+        .map(|b| b.into())
+        .collect();
+
+    let extra: HashSet<String> = res_map
+        .iter()
+        .flat_map(|b| contains(bags, &res_map, b))
+        .collect();
+    res_map.extend(extra.iter().cloned());
+    res_map
 }
