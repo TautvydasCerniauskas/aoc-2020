@@ -383,3 +383,51 @@ fn contains(bags: &Vec<Bag>, contains_map: &HashSet<String>, bag: &str) -> HashS
     res_map.extend(extra.iter().cloned());
     res_map
 }
+
+// Day 8
+#[derive(Debug, Clone)]
+struct Operation {
+    head: String,
+    tail: i32,
+}
+
+pub fn computer_problem(input: &Vec<String>) -> isize {
+    let operations: Vec<Operation> = input
+        .iter()
+        .map(|s| {
+            let s: Vec<&str> = s.split(" ").collect();
+            let operation = take(&s, 0);
+            let value = take(&s, 1);
+            Operation {
+                head: operation.to_string(),
+                tail: atoi(value).unwrap(),
+            }
+        })
+        .collect();
+    process_operations(operations).unwrap()
+}
+
+fn process_operations(operations: Vec<Operation>) -> Option<isize> {
+    let mut index: i32 = 0;
+    let mut acc: isize = 0;
+    let mut visited = HashSet::new();
+    Some(loop {
+        if !visited.insert(index) {
+            break acc;
+        } else {
+            match operations.get(index as usize).unwrap().head.as_str() {
+                "acc" => {
+                    acc += operations.get(index as usize).unwrap().tail as isize;
+                    index += 1;
+                    ()
+                }
+                "jmp" => {
+                    index += operations.get(index as usize).unwrap().tail;
+                    ()
+                }
+                "nop" => index += 1,
+                _ => (),
+            }
+        }
+    })
+}
