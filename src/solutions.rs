@@ -477,15 +477,13 @@ fn process_operation_2(operations: Vec<Operation>, hack: Option<isize>) -> (Outc
                 "acc" => {
                     acc += operation.tail as isize;
                     index += 1;
-                    ()
                 }
                 "jmp" => {
                     indexes.insert(index);
                     index += operation.tail;
-                    ()
                 }
                 "nop" => index += 1,
-                _ => (),
+                _ => unreachable!(),
             }
             if index as usize == operations.len() {
                 break Outcome::Terminate(acc);
