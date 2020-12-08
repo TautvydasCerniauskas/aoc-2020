@@ -391,19 +391,31 @@ struct Operation {
     tail: i32,
 }
 
+#[derive(Debug, Clone)]
+enum Outcome {
+    InfiniteLoop(isize),
+    Terminate(isize),
+}
+
+impl Operation {
+    fn new(input: &Vec<String>) -> Vec<Self> {
+        input
+            .iter()
+            .map(|s| {
+                let s: Vec<&str> = s.split(" ").collect();
+                let operation = take(&s, 0);
+                let value = take(&s, 1);
+                Operation {
+                    head: operation.to_string(),
+                    tail: atoi(value).unwrap(),
+                }
+            })
+            .collect()
+    }
+}
+
 pub fn computer_problem(input: &Vec<String>) -> isize {
-    let operations: Vec<Operation> = input
-        .iter()
-        .map(|s| {
-            let s: Vec<&str> = s.split(" ").collect();
-            let operation = take(&s, 0);
-            let value = take(&s, 1);
-            Operation {
-                head: operation.to_string(),
-                tail: atoi(value).unwrap(),
-            }
-        })
-        .collect();
+    let operations: Vec<Operation> = Operation::new(input);
     process_operations(operations).unwrap()
 }
 
@@ -430,4 +442,57 @@ fn process_operations(operations: Vec<Operation>) -> Option<isize> {
             }
         }
     })
+}
+
+pub fn computer_problem_2(input: &Vec<String>) -> Option<i32> {
+    let operations: Vec<Operation> = Operation::new(input);
+    let (_, jumps) = process_operation_2(operations.clone(), None);
+    for index in jumps {
+        let (outcome, _) = process_operation_2(operations.clone(), Some(index as isize));
+        if let Outcome::Terminate(acc) = outcome {
+            return Some(acc as i32);
+        };
+    }
+    None
+}
+
+fn process_operation_2(operations: Vec<Operation>, hack: Option<isize>) -> (Outcome, HashSet<i32>) {
+    let mut indexes = HashSet::new();
+    let mut index: i32 = 0;
+    let mut acc: isize = 0;
+    let mut visited = HashSet::new();
+    let outcome = loop {
+        if visited.insert(index) {
+            let operation = operations.get(index as usize).unwrap();
+            let opcode = if let Some(hack) = hack {
+                if index == hack as i32 {
+                    "nop"
+                } else {
+                    operation.head.as_str()
+                }
+            } else {
+                operation.head.as_str()
+            };
+            match opcode {
+                "acc" => {
+                    acc += operation.tail as isize;
+                    index += 1;
+                    ()
+                }
+                "jmp" => {
+                    indexes.insert(index);
+                    index += operation.tail;
+                    ()
+                }
+                "nop" => index += 1,
+                _ => (),
+            }
+            if index as usize == operations.len() {
+                break Outcome::Terminate(acc);
+            }
+        } else {
+            break Outcome::InfiniteLoop(acc);
+        }
+    };
+    (outcome, indexes)
 }
