@@ -2,7 +2,7 @@ use regex::Regex;
 use std::collections::{HashMap, HashSet};
 
 // Day 1
-pub fn two_sum(input: Vec<i32>) -> i32 {
+pub fn two_sum(input: &Vec<i32>) -> Option<i32> {
     let target: i32 = 2020;
 
     let mut hm: HashMap<i32, i32> = HashMap::new();
@@ -11,6 +11,7 @@ pub fn two_sum(input: Vec<i32>) -> i32 {
         hm.insert(*line, i as i32);
     }
 
+    println!("{:?}", input);
     for line in input.iter() {
         let compliment = target - line;
 
@@ -18,16 +19,16 @@ pub fn two_sum(input: Vec<i32>) -> i32 {
             let compliment1 = compliment - line1;
             if let Some(&index) = hm.get(&compliment1) {
                 if index != idx as i32 {
-                    return line * line1 * compliment1;
+                    Some(line * line1 * compliment1);
                 }
             }
         }
     }
-    0
+    None
 }
 
 // Day 2
-pub fn correct_password(input: &Vec<String>) -> i32 {
+pub fn correct_password(input: &Vec<String>) -> Option<i32> {
     let mut good_ones = 0;
 
     for line in input.iter() {
@@ -43,7 +44,7 @@ pub fn correct_password(input: &Vec<String>) -> i32 {
             good_ones += 1;
         }
     }
-    good_ones
+    Some(good_ones)
 }
 
 fn take<T: Copy>(vec: &Vec<T>, index: usize) -> T {
@@ -51,7 +52,7 @@ fn take<T: Copy>(vec: &Vec<T>, index: usize) -> T {
 }
 
 // Day 2
-pub fn correct_password_second_solution(input: &Vec<String>) -> i32 {
+pub fn correct_password_second_solution(input: &Vec<String>) -> Option<i32> {
     let mut good_ones = 0;
 
     for line in input.iter() {
@@ -74,7 +75,7 @@ pub fn correct_password_second_solution(input: &Vec<String>) -> i32 {
             }
         }
     }
-    good_ones
+    Some(good_ones)
 }
 
 // Day 3

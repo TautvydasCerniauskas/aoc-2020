@@ -1,7 +1,9 @@
 use std::env;
 
+mod benchmark;
 mod read_file;
 mod solutions;
+use benchmark::benchmarked_main;
 use read_file::read_all;
 use solutions::{
     bag_problem, boarding_problem, boarding_problem_2, computer_problem, computer_problem_2,
@@ -14,20 +16,23 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let day = &args[1];
 
+    const ITERATIONS: usize = 100;
     match day.as_str() {
         "day1" => {
-            let input = read_all::<i32>("inputs/input1.in");
-            println!("{:?}", two_sum(input));
+            benchmarked_main(read_all, two_sum, "inputs/input1.in", ITERATIONS);
         }
         "day2" => {
-            let input = &read_all::<String>("inputs/input2.in");
-            println!("Day 2 solution 1 result: {}", correct_password(input));
-            println!(
-                "Day 2 solution 2 result: {}",
-                correct_password_second_solution(input)
+            benchmarked_main(read_all, correct_password, "inputs/input2.in", ITERATIONS);
+            println!("\n");
+            benchmarked_main(
+                read_all,
+                correct_password_second_solution,
+                "inputs/input2.in",
+                ITERATIONS,
             );
         }
         "day3" => {
+            println!("\n");
             let input = &read_all::<String>("inputs/input3.in");
             println!(
                 "Day 3 solution 1 result: {}",
