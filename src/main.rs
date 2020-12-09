@@ -5,7 +5,7 @@ mod solutions;
 use read_file::read_all;
 use solutions::{
     bag_problem, boarding_problem, boarding_problem_2, computer_problem, computer_problem_2,
-    correct_password, correct_password_second_solution, missing_passport_sol_1,
+    correct_password, correct_password_second_solution, encoder_problem, missing_passport_sol_1,
     missing_passport_sol_2, question_problem, question_problem_2, tree_problem_1_and_2, two_sum,
 };
 
@@ -82,6 +82,11 @@ fn main() {
             let input = &read_all::<String>("inputs/input8.in");
             println!("Part 1 solution: {}", computer_problem(&input));
             println!("Part 2 solution: {}", computer_problem_2(&input).unwrap());
+        }
+        "day9" => {
+            let input = &read_all::<String>("inputs/input9.in");
+            println!("Part 1 solution: {}", encoder_problem(&input, 25));
+            // println!("Part 2 solution: {}", computer_problem_2(&input).unwrap());
         }
         _ => println!("Wrong argument!"),
     }

@@ -494,3 +494,37 @@ fn process_operation_2(operations: Vec<Operation>, hack: Option<isize>) -> (Outc
     };
     (outcome, indexes)
 }
+
+// Day 9
+pub fn encoder_problem(input: &Vec<String>, preamble: usize) -> usize {
+    let mut index = 0;
+    loop {
+        let chunk_start = index;
+        let chunk_end = index + preamble;
+        if chunk_end > input.len() - 1 {
+            break;
+        }
+        let value_to_check = atoi(input.get(chunk_end).unwrap()).unwrap();
+
+        let input_range = &input[chunk_start..chunk_end];
+        let result = find_if_sum_exists(input_range, value_to_check);
+        if let None = result {
+            return value_to_check as usize;
+        }
+
+        index += 1;
+    }
+
+    0
+}
+
+fn find_if_sum_exists(input: &[String], value_to_check_against: i32) -> Option<bool> {
+    for l in input.iter() {
+        let l = atoi(l).unwrap();
+        let remainder = value_to_check_against - l;
+        if input.contains(&remainder.to_string()) {
+            return Some(true);
+        }
+    }
+    None
+}
