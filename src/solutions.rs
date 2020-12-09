@@ -530,19 +530,9 @@ fn find_if_sum_exists(input: &[String], value_to_check_against: i32) -> Option<b
 pub fn encoder_problem_2(input: &Vec<String>, preamble: usize) -> i32 {
     let mut index = 0;
     let invalid_number = encoder_problem(input, preamble);
-    println!("{}", invalid_number);
     let mut return_set = vec![];
     loop {
-        if index > input.len() - 1 {
-            break 0;
-        }
         let return_sum: i32 = return_set.iter().sum();
-
-        // println!("Sum: {:?}", return_sum);
-        // println!(
-        //     "Item at index: {}",
-        //     atoi(input.get(index).unwrap()).unwrap()
-        // );
         if return_sum < invalid_number as i32 {
             let value_to_insert = atoi(input.get(index).unwrap()).unwrap();
             return_set.push(value_to_insert);
@@ -554,7 +544,6 @@ pub fn encoder_problem_2(input: &Vec<String>, preamble: usize) -> i32 {
         }
 
         if return_set.iter().sum::<i32>() == invalid_number as i32 {
-            println!("Set: {:?}", return_set);
             return return_set.iter().min().unwrap() + return_set.iter().max().unwrap();
         }
     }
