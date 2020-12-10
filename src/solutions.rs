@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::collections::{HashMap, HashSet};
+use std::collections::{hash_map::Entry, BinaryHeap, HashMap, HashSet};
 
 // Day 1
 pub fn two_sum(input: &Vec<i32>) -> Option<i32> {
@@ -130,7 +130,7 @@ pub fn missing_passport_sol_2(input: String) -> usize {
     entries.iter().filter(|e| v.is_valid(e)).count()
 }
 
-fn has_fields(e: &Entry) -> bool {
+fn has_fields(e: &CustomEntry) -> bool {
     e.len() == 8 || (e.len() == 7 && !e.contains_key("cid"))
 }
 
@@ -138,9 +138,9 @@ fn atoi(s: &str) -> Option<i32> {
     i32::from_str_radix(s, 10).ok()
 }
 
-type Entry<'t> = HashMap<&'t str, &'t str>;
+type CustomEntry<'t> = HashMap<&'t str, &'t str>;
 
-fn parse_entries(s: &str) -> Vec<Entry> {
+fn parse_entries(s: &str) -> Vec<CustomEntry> {
     let mut entries = Vec::new();
     for line in s.split("\n\n") {
         let mut m = HashMap::new();
@@ -173,7 +173,7 @@ impl Validator {
         Self { res }
     }
 
-    fn is_valid(&self, e: &Entry) -> bool {
+    fn is_valid(&self, e: &CustomEntry) -> bool {
         let valid_fields = e
             .iter()
             .filter(|(&k, _)| k != "cid")
@@ -563,12 +563,35 @@ pub fn adapter_problem(input: &Vec<usize>) -> Option<usize> {
 }
 
 pub fn adapter_problem_2(input: &Vec<usize>) -> Option<usize> {
-    let mut input = input.clone();
-    &input.push(0);
-    &input.sort();
-    let mut jumps = [0; 3];
-    input.windows(2).for_each(|adapters| {
-        jumps[adapters[1] - adapters[0] - 1] += 1;
-    });
-    Some(jumps[0] * (jumps[2] + 1))
+    let input = input.iter().copied().chain(Some(0)).collect::<HashSet<_>>();
+    let max = *input.iter().max()?;
+    let mut paths_heaps = BinaryHeap::new();
+    let mut paths_count = HashMap::new();
+    paths_count.insert(max, 1);
+    paths_heaps.push(max);
+    while let Some(path) = paths_heaps.pop() {
+        let count = paths_count.remove(&path)?;
+        if path == 0 {
+            return Some(count);
+        }
+        for step in 1..=3 {
+            if path < step {
+                continue;
+            }
+            let next = path - step;
+            if !input.contains(&next) {
+                continue;
+            }
+            match paths_count.entry(next) {
+                Entry::Occupied(mut entry) => {
+                    *entry.get_mut() += count;
+                }
+                Entry::Vacant(entry) => {
+                    entry.insert(count);
+                    paths_heaps.push(next);
+                }
+            }
+        }
+    }
+    None
 }
