@@ -549,3 +549,35 @@ pub fn encoder_problem_2(input: &Vec<String>, preamble: usize) -> i32 {
         }
     }
 }
+
+// Day 10
+pub fn adapter_problem(input: &Vec<i32>) -> Option<i32> {
+    let mut input = input.clone();
+    &input.sort();
+    let max = input.iter().max().unwrap();
+    let max_adapter = max + 3;
+
+    let mut difference_of_one = 0;
+    let mut difference_of_three = 0;
+
+    let n = input.get(0).unwrap();
+    if n - 0 == 1 {
+        difference_of_one += 1;
+    } else {
+        difference_of_three += 1;
+    }
+    for (i, line) in input.iter().enumerate() {
+        let next_entry = match input.get(i + 1) {
+            Some(next) => *next,
+            None => max_adapter,
+        };
+        // println!("{}", next_entry);
+        if next_entry - line == 1 {
+            difference_of_one += 1;
+        } else {
+            difference_of_three += 1;
+        }
+    }
+    // println!("{}, {}", difference_of_one, difference_of_three);
+    Some(difference_of_one * difference_of_three)
+}
