@@ -53,6 +53,7 @@ pub fn benchmarked_main<Intermediate, Solution, Parser, Solver>(
     solve_already_parsed: Solver,
     input: &str,
     iterations: usize,
+    disable_logging: bool,
 ) where
     Parser: Fn(&str) -> Intermediate,
     Solver: Fn(&Intermediate) -> Option<Solution>,
@@ -71,15 +72,17 @@ pub fn benchmarked_main<Intermediate, Solution, Parser, Solver>(
         let solution_repeat = solve_already_parsed(&map).unwrap();
         assert_eq!(solution_repeat, solution);
     });
-    println!("Time (with parsing): {:?}", time_with_parsing);
-    println!("Time (without parsing): {:?}", total_without_parsing);
-    println!("Overhead: {:?}", overhead);
-    println!(
-        "Time (with parsing) - Overhead: {:?}",
-        (time_with_parsing - overhead)
-    );
-    println!(
-        "Time (without parsing) - Overhead: {:?}",
-        (total_without_parsing - overhead)
-    );
+    if !disable_logging {
+        println!("Time (with parsing): {:?}", time_with_parsing);
+        println!("Time (without parsing): {:?}", total_without_parsing);
+        println!("Overhead: {:?}", overhead);
+        println!(
+            "Time (with parsing) - Overhead: {:?}",
+            (time_with_parsing - overhead)
+        );
+        println!(
+            "Time (without parsing) - Overhead: {:?}",
+            (total_without_parsing - overhead)
+        );
+    }
 }

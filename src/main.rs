@@ -4,12 +4,12 @@ mod benchmark;
 mod read_file;
 mod solutions;
 use benchmark::benchmarked_main;
-use read_file::read_all;
+use read_file::{parse_as_seat_option, read_all};
 use solutions::{
     adapter_problem, adapter_problem_2, bag_problem, boarding_problem, boarding_problem_2,
     computer_problem, computer_problem_2, correct_password, correct_password_second_solution,
     encoder_problem, encoder_problem_2, missing_passport_sol_1, missing_passport_sol_2,
-    question_problem, question_problem_2, tree_problem_1_and_2, two_sum,
+    question_problem, question_problem_2, seat_problem, tree_problem_1_and_2, two_sum,
 };
 
 fn main() {
@@ -19,16 +19,23 @@ fn main() {
     const ITERATIONS: usize = 1;
     match day.as_str() {
         "day1" => {
-            benchmarked_main(read_all, two_sum, "inputs/input1.in", ITERATIONS);
+            benchmarked_main(read_all, two_sum, "inputs/input1.in", ITERATIONS, false);
         }
         "day2" => {
-            benchmarked_main(read_all, correct_password, "inputs/input2.in", ITERATIONS);
+            benchmarked_main(
+                read_all,
+                correct_password,
+                "inputs/input2.in",
+                ITERATIONS,
+                false,
+            );
             println!("\n");
             benchmarked_main(
                 read_all,
                 correct_password_second_solution,
                 "inputs/input2.in",
                 ITERATIONS,
+                false,
             );
         }
         "day3" => {
@@ -95,9 +102,32 @@ fn main() {
             println!("Part 2 solution: {}", encoder_problem_2(&input, 25));
         }
         "day10" => {
-            // benchmarked_main(read_all, adapter_problem, "inputs/input10.in", ITERATIONS);
+            benchmarked_main(
+                read_all,
+                adapter_problem,
+                "inputs/input10.in",
+                ITERATIONS,
+                false,
+            );
             println!("\n");
-            benchmarked_main(read_all, adapter_problem_2, "inputs/input10.in", ITERATIONS);
+            benchmarked_main(
+                read_all,
+                adapter_problem_2,
+                "inputs/input10.in",
+                ITERATIONS,
+                false,
+            );
+        }
+        "day11" => {
+            benchmarked_main(
+                parse_as_seat_option,
+                seat_problem,
+                "inputs/input11.in",
+                ITERATIONS,
+                false,
+            );
+            println!("\n");
+            // benchmarked_main(read_all, adapter_problem_2, "inputs/input10.in", ITERATIONS);
         }
         _ => println!("Wrong argument!"),
     }

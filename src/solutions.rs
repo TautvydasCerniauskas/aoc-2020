@@ -595,3 +595,80 @@ pub fn adapter_problem_2(input: &Vec<usize>) -> Option<usize> {
     }
     None
 }
+
+#[derive(Debug, Clone, PartialEq, Copy)]
+pub enum SeatOption {
+    Free,
+    Occupied,
+    Floor,
+}
+
+impl SeatOption {
+    pub fn match_on_input(input: char) -> Self {
+        match input {
+            'L' => SeatOption::Free,
+            '#' => SeatOption::Occupied,
+            _ => SeatOption::Floor,
+        }
+    }
+
+    fn count_adjacent(input: &mut Vec<Vec<usize>>, rows: usize, cols: usize, x: usize, y: usize) {
+        // We are only searching adjacent 3x3
+        for dy in 0..3 {
+            for dx in 0..3 {
+                if dx == 1 && dy == 1 {
+                    continue;
+                }
+                if (y + dy >= 1) && (x + dx >= 1) && (y + dy <= rows) && (x + dx <= cols) {
+                    input[y + dy - 1][x + dx - 1] += 1;
+                }
+            }
+        }
+    }
+
+    fn count_neighbors(input: &Vec<Vec<SeatOption>>, rows: usize, cols: usize) -> Vec<Vec<usize>> {
+        let mut counts = vec![vec![0; cols]; rows];
+        for y in 0..rows {
+            for x in 0..cols {
+                if input[y][x] == SeatOption::Occupied {
+                    SeatOption::count_adjacent(&mut counts, rows, cols, x, y);
+                }
+            }
+        }
+        counts
+    }
+}
+
+// Day 11
+pub fn seat_problem(input: &Vec<Vec<SeatOption>>) -> Option<usize> {
+    let mut input = input.clone();
+    let first_value = input.get(0)?;
+    let rows = input.len();
+    let cols = first_value.len();
+    loop {
+        let mut changes = false;
+        let occupied_neighbors = SeatOption::count_neighbors(&input, rows, cols);
+        for y in 0..rows {
+            for x in 0..cols {
+                match (input[y][x], occupied_neighbors[y][x]) {
+                    (SeatOption::Free, 0) => {
+                        changes = true;
+                        input[y][x] = SeatOption::Occupied;
+                    }
+                    (SeatOption::Occupied, n) if n >= 4 => {
+                        changes = true;
+                        input[y][x] = SeatOption::Free;
+                    }
+                    _ => (),
+                }
+            }
+        }
+        if !changes {
+            break;
+        }
+    }
+    let res = *&input.iter().fold(0, |acc, row| {
+        acc + row.iter().filter(|&&ch| ch == SeatOption::Occupied).count()
+    });
+    Some(res)
+}
