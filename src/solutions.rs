@@ -672,3 +672,39 @@ pub fn seat_problem(input: &Vec<Vec<SeatOption>>) -> Option<usize> {
     });
     Some(res)
 }
+
+// Day 12 navigation problem
+pub fn navigation_problem(input: &Vec<String>) -> Option<usize> {
+    let instructions = input
+        .iter()
+        .map(|i| {
+            let (action, value) = i.split_at(1);
+            let value = value.parse::<i32>().unwrap();
+            (action, value)
+        })
+        .collect::<Vec<(&str, i32)>>();
+
+    let mut x: i32 = 0;
+    let mut y: i32 = 0;
+    let mut angle = 0;
+    for instruction in instructions {
+        match instruction.0 {
+            "F" => match angle {
+                0 => x += instruction.1,
+                90 => y += instruction.1,
+                180 => x -= instruction.1,
+                270 => y -= instruction.1,
+                _ => panic!("invalid angle"),
+            },
+            "N" => y -= instruction.1,
+            "S" => y += instruction.1,
+            "E" => x += instruction.1,
+            "W" => x -= instruction.1,
+            "L" => angle = (angle + 360 - instruction.1) % 360,
+            "R" => angle = (angle + instruction.1) % 360,
+            _ => unreachable!(),
+        }
+    }
+
+    Some((x.abs() + y.abs()) as usize)
+}

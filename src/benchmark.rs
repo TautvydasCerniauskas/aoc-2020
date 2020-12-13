@@ -61,7 +61,9 @@ pub fn benchmarked_main<Intermediate, Solution, Parser, Solver>(
 {
     fs::read_to_string(&input).unwrap();
     let solution = solve(&input, &parse, &solve_already_parsed).unwrap();
-    println!("Solution: {}", solution);
+    if !disable_logging {
+        println!("Solution: {}", solution);
+    }
     let overhead = benchmark(iterations, || ());
     let time_with_parsing = benchmark(iterations, || {
         let solution_repeat = solve(&input, &parse, &solve_already_parsed).unwrap();
