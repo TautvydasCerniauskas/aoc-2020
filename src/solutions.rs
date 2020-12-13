@@ -748,7 +748,7 @@ pub fn bus_problem(input: &Vec<String>) -> Option<usize> {
     let buses = input[1]
         .split(",")
         .filter_map(|c| c.parse::<usize>().ok())
-        .collect::<Vec<usize>>();
+        .collect::<HashSet<usize>>();
 
     let mut bus_id: usize = 0;
     let mut minutes: usize = 10000000;
@@ -762,4 +762,39 @@ pub fn bus_problem(input: &Vec<String>) -> Option<usize> {
         }
     }
     Some(bus_id * minutes)
+}
+
+struct Bus {
+    bus_id: usize,
+    offset: usize,
+}
+
+pub fn bus_departure_time(input: &Vec<String>) -> Option<usize> {
+    let _ = input[0].parse::<usize>().unwrap();
+
+    let mut x = 1;
+    let mut earliest_timestamp = 0;
+
+    let buses = input[1]
+        .split(",")
+        .enumerate()
+        .filter_map(|(offset, bus_id)| {
+            bus_id
+                .parse::<usize>()
+                .ok()
+                .map(|id| Bus { bus_id: id, offset })
+        })
+        .collect::<Vec<Bus>>();
+
+    for bus in buses {
+        let mut xn = x;
+        while (xn + (bus.offset + earliest_timestamp)) % bus.bus_id != 0 {
+            xn += x;
+        }
+
+        earliest_timestamp += xn;
+        x *= bus.bus_id;
+    }
+
+    Some(earliest_timestamp)
 }
