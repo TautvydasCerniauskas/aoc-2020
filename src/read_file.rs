@@ -31,3 +31,15 @@ pub fn parse_as_seat_option(file_name: &str) -> Vec<Vec<SeatOption>> {
         })
         .collect()
 }
+
+pub fn read_file_for_navigation(file_name: &str) -> Vec<(String, i32)> {
+    fs::read_to_string(file_name)
+        .expect("File not found!")
+        .lines()
+        .map(|i| {
+            let (action, value) = i.split_at(1);
+            let value = value.parse::<i32>().unwrap();
+            (action.to_string(), value)
+        })
+        .collect::<Vec<(String, i32)>>()
+}

@@ -674,21 +674,12 @@ pub fn seat_problem(input: &Vec<Vec<SeatOption>>) -> Option<usize> {
 }
 
 // Day 12 navigation problem
-pub fn navigation_problem(input: &Vec<String>) -> Option<usize> {
-    let instructions = input
-        .iter()
-        .map(|i| {
-            let (action, value) = i.split_at(1);
-            let value = value.parse::<i32>().unwrap();
-            (action, value)
-        })
-        .collect::<Vec<(&str, i32)>>();
-
+pub fn navigation_problem(input: &Vec<(String, i32)>) -> Option<usize> {
     let mut x: i32 = 0;
     let mut y: i32 = 0;
     let mut angle = 0;
-    for instruction in instructions {
-        match instruction.0 {
+    for instruction in input {
+        match instruction.0.as_str() {
             "F" => match angle {
                 0 => x += instruction.1,
                 90 => y += instruction.1,
@@ -702,6 +693,48 @@ pub fn navigation_problem(input: &Vec<String>) -> Option<usize> {
             "W" => x -= instruction.1,
             "L" => angle = (angle + 360 - instruction.1) % 360,
             "R" => angle = (angle + instruction.1) % 360,
+            _ => unreachable!(),
+        }
+    }
+
+    Some((x.abs() + y.abs()) as usize)
+}
+
+pub fn navigation_problem_2(input: &Vec<(String, i32)>) -> Option<usize> {
+    let mut x: i32 = 0;
+    let mut y: i32 = 0;
+    let mut wpx: i32 = 10;
+    let mut wpy: i32 = -1;
+    for instruction in input {
+        match instruction.0.as_str() {
+            "F" => {
+                x += wpx * instruction.1;
+                y += wpy * instruction.1;
+            }
+            "N" => wpy -= instruction.1,
+            "S" => wpy += instruction.1,
+            "E" => wpx += instruction.1,
+            "W" => wpx -= instruction.1,
+            "L" => {
+                let (new_wpx, new_wpy) = match instruction.1 {
+                    90 => (wpy, -wpx),
+                    180 => (-wpx, -wpy),
+                    270 => (-wpy, wpx),
+                    _ => panic!("invalid angle"),
+                };
+                wpx = new_wpx;
+                wpy = new_wpy;
+            }
+            "R" => {
+                let (new_wpx, new_wpy) = match instruction.1 {
+                    90 => (-wpy, wpx),
+                    180 => (-wpx, -wpy),
+                    270 => (wpy, -wpx),
+                    _ => panic!("invalid angle"),
+                };
+                wpx = new_wpx;
+                wpy = new_wpy;
+            }
             _ => unreachable!(),
         }
     }

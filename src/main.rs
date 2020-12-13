@@ -4,13 +4,13 @@ mod benchmark;
 mod read_file;
 mod solutions;
 use benchmark::benchmarked_main;
-use read_file::{parse_as_seat_option, read_all};
+use read_file::{parse_as_seat_option, read_all, read_file_for_navigation};
 use solutions::{
     adapter_problem, adapter_problem_2, bag_problem, boarding_problem, boarding_problem_2,
     computer_problem, computer_problem_2, correct_password, correct_password_second_solution,
     encoder_problem, encoder_problem_2, missing_passport_sol_1, missing_passport_sol_2,
-    navigation_problem, question_problem, question_problem_2, seat_problem, tree_problem_1_and_2,
-    two_sum,
+    navigation_problem, navigation_problem_2, question_problem, question_problem_2, seat_problem,
+    tree_problem_1_and_2, two_sum,
 };
 
 fn main() {
@@ -132,14 +132,20 @@ fn main() {
         }
         "day12" => {
             benchmarked_main(
-                read_all,
+                read_file_for_navigation,
                 navigation_problem,
                 "inputs/input12.in",
                 ITERATIONS,
                 false,
             );
             println!("\n");
-            // benchmarked_main(read_all, adapter_problem_2, "inputs/input10.in", ITERATIONS);
+            benchmarked_main(
+                read_file_for_navigation,
+                navigation_problem_2,
+                "inputs/input12.in",
+                ITERATIONS,
+                false,
+            );
         }
         _ => println!("Wrong argument!"),
     }
