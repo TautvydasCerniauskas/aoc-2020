@@ -741,3 +741,25 @@ pub fn navigation_problem_2(input: &Vec<(String, i32)>) -> Option<usize> {
 
     Some((x.abs() + y.abs()) as usize)
 }
+
+// Day 13
+pub fn bus_problem(input: &Vec<String>) -> Option<usize> {
+    let timestamp = input[0].parse::<usize>().unwrap();
+    let buses = input[1]
+        .split(",")
+        .filter_map(|c| c.parse::<usize>().ok())
+        .collect::<Vec<usize>>();
+
+    let mut bus_id: usize = 0;
+    let mut minutes: usize = 10000000;
+
+    for bus in buses.iter() {
+        let new_value = bus + (timestamp - (timestamp % bus));
+        let diff = new_value - timestamp;
+        if diff < minutes {
+            bus_id = *bus;
+            minutes = diff;
+        }
+    }
+    Some(bus_id * minutes)
+}
