@@ -798,3 +798,40 @@ pub fn bus_departure_time(input: &Vec<String>) -> Option<usize> {
 
     Some(earliest_timestamp)
 }
+
+// Day 14
+pub fn memory_problem(input: &Vec<String>) -> Option<usize> {
+    let mut mem: HashMap<usize, usize> = HashMap::new();
+    let mut and_or = (0, 0);
+    for line in input.iter() {
+        if line.starts_with("mas") {
+            and_or = line
+                .split(" = ")
+                .skip(1)
+                .next()
+                .unwrap()
+                .bytes()
+                .rev()
+                .enumerate()
+                .fold((usize::MAX, 0), |(and, or), (i, b)| match b {
+                    b'0' => (and & !(1 << i), or),
+                    b'1' => (and, or | 1 << i),
+                    _ => (and, or),
+                });
+        } else {
+            &line[4..]
+                .split(']')
+                .collect::<Vec<&str>>()
+                .windows(2)
+                .for_each(|l| {
+                    let m = l[1].replace(' ', "");
+                    let m = m
+                        .replace(&[']', ')', '='][..], "")
+                        .parse::<usize>()
+                        .unwrap();
+                    mem.insert(l[0].parse::<usize>().unwrap(), m & and_or.0 | and_or.1);
+                });
+        }
+    }
+    Some(mem.values().sum())
+}

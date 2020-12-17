@@ -63,18 +63,16 @@ pub fn benchmarked_main<Intermediate, Solution, Parser, Solver>(
     let solution = solve(&input, &parse, &solve_already_parsed).unwrap();
     if !disable_logging {
         println!("Solution: {}", solution);
-    }
-    let overhead = benchmark(iterations, || ());
-    let time_with_parsing = benchmark(iterations, || {
-        let solution_repeat = solve(&input, &parse, &solve_already_parsed).unwrap();
-        assert_eq!(solution_repeat, solution);
-    });
-    let map = parse(&input);
-    let total_without_parsing = benchmark(iterations, || {
-        let solution_repeat = solve_already_parsed(&map).unwrap();
-        assert_eq!(solution_repeat, solution);
-    });
-    if !disable_logging {
+        let overhead = benchmark(iterations, || ());
+        let time_with_parsing = benchmark(iterations, || {
+            let solution_repeat = solve(&input, &parse, &solve_already_parsed).unwrap();
+            assert_eq!(solution_repeat, solution);
+        });
+        let map = parse(&input);
+        let total_without_parsing = benchmark(iterations, || {
+            let solution_repeat = solve_already_parsed(&map).unwrap();
+            assert_eq!(solution_repeat, solution);
+        });
         println!("Time (with parsing): {:?}", time_with_parsing);
         println!("Time (without parsing): {:?}", total_without_parsing);
         println!("Overhead: {:?}", overhead);
