@@ -824,12 +824,12 @@ pub fn memory_problem(input: &Vec<String>) -> Option<usize> {
                 .collect::<Vec<&str>>()
                 .windows(2)
                 .for_each(|l| {
-                    let m = l[1].replace(' ', "");
-                    let m = m
-                        .replace(&[']', ')', '='][..], "")
+                    let l0 = l[0].parse::<usize>().unwrap();
+                    let m = l[1]
+                        .replace(&[']', ')', '=', ' '][..], "")
                         .parse::<usize>()
                         .unwrap();
-                    mem.insert(l[0].parse::<usize>().unwrap(), m & and_or.0 | and_or.1);
+                    mem.insert(l0, m & and_or.0 | and_or.1);
                 });
         }
     }
