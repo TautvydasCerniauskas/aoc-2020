@@ -826,7 +826,7 @@ pub fn memory_problem(input: &Vec<String>) -> Option<usize> {
                 .for_each(|l| {
                     let l0 = l[0].parse::<usize>().unwrap();
                     let m = l[1]
-                        .replace(&[']', ')', '=', ' '][..], "")
+                        .replace(&[']', '=', ' '][..], "")
                         .parse::<usize>()
                         .unwrap();
                     mem.insert(l0, m & and_or.0 | and_or.1);
@@ -834,4 +834,29 @@ pub fn memory_problem(input: &Vec<String>) -> Option<usize> {
         }
     }
     Some(mem.values().sum())
+}
+
+// Day 15
+pub fn number_game(input: &Vec<usize>) -> Option<usize> {
+    println!("{}", nth(30000000, &input));
+    Some(nth(2020, &input))
+}
+
+fn nth(n: usize, nums: &Vec<usize>) -> usize {
+    let mut nums = nums.iter().copied();
+    let mut last_seen = HashMap::new();
+    let mut next: usize = 0;
+    for i in 1..n {
+        let next0 = match nums.next() {
+            Some(num) => num,
+            None => next,
+        };
+        let next1 = match last_seen.get(&next0) {
+            Some(ts) => i - ts,
+            None => 0,
+        };
+        last_seen.insert(next0, i);
+        next = next1;
+    }
+    next
 }

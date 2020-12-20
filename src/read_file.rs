@@ -43,3 +43,18 @@ pub fn read_file_for_navigation(file_name: &str) -> Vec<(String, i32)> {
         })
         .collect::<Vec<(String, i32)>>()
 }
+
+pub fn read_file_for_number_game(file_name: &str) -> Vec<usize> {
+    fs::read_to_string(file_name)
+        .expect("File not found!")
+        .lines()
+        .map(|i| {
+            let i = i
+                .split(',')
+                .map(|c| c.parse().unwrap())
+                .collect::<Vec<usize>>();
+            i
+        })
+        .flatten()
+        .collect()
+}
