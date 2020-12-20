@@ -842,13 +842,12 @@ pub fn number_game(input: &Vec<usize>) -> Option<usize> {
     Some(nth(2020, &input))
 }
 
-fn nth(n: usize, nums: &Vec<usize>) -> usize {
-    let mut nums = nums.iter().copied();
+fn nth(n: usize, numbers: &Vec<usize>) -> usize {
     let mut last_seen = HashMap::new();
     let mut next: usize = 0;
     for i in 1..n {
-        let next0 = match nums.next() {
-            Some(num) => num,
+        let next0 = match numbers.iter().next() {
+            Some(num) => *num,
             None => next,
         };
         let next1 = match last_seen.get(&next0) {
