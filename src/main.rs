@@ -12,7 +12,8 @@ use solutions::{
     bus_departure_time, bus_problem, computer_problem, computer_problem_2, correct_password,
     correct_password_second_solution, encoder_problem, encoder_problem_2, memory_problem,
     missing_passport_sol_1, missing_passport_sol_2, navigation_problem, navigation_problem_2,
-    number_game, question_problem, question_problem_2, seat_problem, tree_problem_1_and_2, two_sum,
+    number_game, question_problem, question_problem_2, seat_problem, train_ticket_problem,
+    tree_problem_1_and_2, two_sum,
 };
 
 fn main() {
@@ -180,6 +181,16 @@ fn main() {
             ITERATIONS,
             false,
         ),
+        "day16" => {
+            benchmarked_main(
+                read_all,
+                train_ticket_problem,
+                "inputs/input16.in",
+                ITERATIONS,
+                true,
+            );
+            println!("\n");
+        }
         _ => println!("Wrong argument!"),
     }
 }

@@ -845,6 +845,7 @@ pub fn number_game(input: &Vec<usize>) -> Option<usize> {
 fn nth(n: usize, numbers: &Vec<usize>) -> usize {
     let mut last_seen = HashMap::new();
     let mut next: usize = 0;
+
     for i in 1..n {
         let next0 = match numbers.iter().next() {
             Some(num) => *num,
@@ -858,4 +859,53 @@ fn nth(n: usize, numbers: &Vec<usize>) -> usize {
         next = next1;
     }
     next
+}
+
+// Day 16
+pub fn train_ticket_problem(input: &Vec<String>) -> Option<usize> {
+    let mut values: HashSet<usize> = HashSet::new();
+    let mut results: Vec<usize> = vec![];
+    let mut tickets_start_at_next_line = false;
+    for line in input.iter() {
+        let l: Vec<&str> = line.split(": ").collect();
+        let mut first_range = Vec::new();
+        let mut second_range = Vec::new();
+
+        let ranges = l.get(1);
+        if ranges.is_some() {
+            let r = ranges.unwrap().split(" or ").collect::<Vec<&str>>();
+            first_range = r[0]
+                .split("-")
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect();
+            second_range = r[1]
+                .split("-")
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect();
+        }
+
+        if !first_range.is_empty() && !second_range.is_empty() {
+            (first_range[0]..first_range[1] + 1).for_each(|x| {
+                values.insert(x);
+                ()
+            });
+            (second_range[0]..second_range[1] + 1).for_each(|x| {
+                values.insert(x);
+                ()
+            });
+        }
+        if !tickets_start_at_next_line {
+            tickets_start_at_next_line = line.contains("nearby");
+        }
+        if tickets_start_at_next_line {
+            line.split(",").for_each(|x| {
+                let x = x.parse::<usize>().unwrap_or(0);
+                if !values.contains(&x) {
+                    results.push(x);
+                }
+                ()
+            });
+        }
+    }
+    Some(results.iter().sum())
 }
